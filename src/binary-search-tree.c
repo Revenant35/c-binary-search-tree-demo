@@ -4,6 +4,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <arm/limits.h>
 
 static Node *create_node(const int data) {
     Node *node = malloc(sizeof(Node));
@@ -46,7 +47,7 @@ static Node *find_minimum_value_node(Node *node) {
     if (node == nullptr) return nullptr;
 
     Node *current = node;
-    while (current->left != nullptr) current = node->left;
+    while (current->left != nullptr) current = current->left;
 
     return current;
 }
@@ -55,7 +56,7 @@ static Node *find_maximum_value_node(Node *node) {
     if (node == nullptr) return nullptr;
 
     Node *current = node;
-    while (current->right != nullptr) current = node->right;
+    while (current->right != nullptr) current = current->right;
 
     return current;
 }
@@ -193,5 +194,24 @@ void print_postorder_binary_search_tree(const BinarySearchTree *tree) {
     postorder_traversal(tree->root, print_node);
 }
 
-// TODO: Minimum value in tree
-// TODO: Maximum value in tree
+int maximum_value_binary_search_tree(const BinarySearchTree* tree) {
+    if (tree == nullptr || tree->root == nullptr) return INT_MIN;
+    const Node *maximum = find_maximum_value_node(tree->root);
+    return maximum->data;
+}
+
+int minimum_value_binary_search_tree(const BinarySearchTree* tree) {
+    if (tree == nullptr || tree->root == nullptr) return INT_MAX;
+    const Node *minimum = find_minimum_value_node(tree->root);
+    return minimum->data;
+}
+
+int floor_binary_search_tree(const BinarySearchTree* tree, int data) {
+    if (tree == nullptr || tree->root == nullptr) return INT_MIN;
+    // TODO: Implementation
+}
+
+int ceil_binary_search_tree(const BinarySearchTree* tree, int data) {
+    if (tree == nullptr || tree->root == nullptr) return INT_MAX;
+    // TODO: Implementation
+}

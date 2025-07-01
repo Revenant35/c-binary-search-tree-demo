@@ -22,9 +22,9 @@ void print_inorder_binary_search_tree(const BinarySearchTree* tree);
 void print_preorder_binary_search_tree(const BinarySearchTree* tree);
 void print_postorder_binary_search_tree(const BinarySearchTree* tree);
 
-// TODO: Minimum value in tree
-// TODO: Maximum value in tree
-// TODO: Floor value in tree
-// TODO: Ceiling value in tree
+int maximum_value_binary_search_tree(const BinarySearchTree* tree);
+int minimum_value_binary_search_tree(const BinarySearchTree* tree);
+int floor_binary_search_tree(const BinarySearchTree* tree, int data);
+int ceil_binary_search_tree(const BinarySearchTree* tree, int data);
 
 #endif //BINARY_SEARCH_TREE_H
