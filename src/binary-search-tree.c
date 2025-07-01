@@ -42,19 +42,61 @@ static void print_node(Node *node) {
     printf("%d ", node->data);
 }
 
-static void insert_binary_search_tree_node(Node* node, const int data) {
+static Node *find_minimum_value_node(Node *node) {
+    if (node == nullptr) return nullptr;
+
+    Node *current = node;
+    while (current->left != nullptr) current = node->left;
+
+    return current;
+}
+
+static Node *find_maximum_value_node(Node *node) {
+    if (node == nullptr) return nullptr;
+
+    Node *current = node;
+    while (current->right != nullptr) current = node->right;
+
+    return current;
+}
+
+static bool is_leaf_node(const Node *node) {
+    assert(node != nullptr);
+
+    return node->left == nullptr && node->right == nullptr;
+}
+
+static bool has_two_children(const Node *node) {
+    assert(node != nullptr);
+
+    return node->left != nullptr && node->right != nullptr;
+}
+
+static bool insert_binary_search_tree_node(Node *node, const int data) {
     assert(node != nullptr);
 
     if (data > node->data) {
-        if (node->right == nullptr) node->right = create_node(data);
-        else return insert_binary_search_tree_node(node->right, data);
-    } else {
-        if (node->left == nullptr) node->left = create_node(data);
-        else return insert_binary_search_tree_node(node->left, data);
+        if (node->right != nullptr) {
+            return insert_binary_search_tree_node(node->right, data);
+        }
+
+        node->right = create_node(data);
+        return true;
     }
+
+    if (data < node->data) {
+        if (node->left != nullptr) {
+            return insert_binary_search_tree_node(node->left, data);
+        }
+
+        node->left = create_node(data);
+        return true;
+    }
+
+    return false;
 }
 
-static bool search_binary_search_tree_node(const Node* node, const int data) {
+static bool search_binary_search_tree_node(const Node *node, const int data) {
     if (node == nullptr) return false;
     if (node->data == data) return true;
 
@@ -65,15 +107,48 @@ static bool search_binary_search_tree_node(const Node* node, const int data) {
     }
 }
 
-BinarySearchTree* create_binary_search_tree() {
-    BinarySearchTree* tree = malloc(sizeof(BinarySearchTree));
+static bool delete_binary_search_tree_node(Node **node, const int data) {
+    if (*node == nullptr) return false;
+
+    if (data < (*node)->data) {
+        return delete_binary_search_tree_node(&(*node)->left, data);
+    }
+
+    if (data > (*node)->data) {
+        return delete_binary_search_tree_node(&(*node)->right, data);
+    }
+
+    // Node to delete found
+    Node *target = *node;
+
+    if (is_leaf_node(target)) {
+        free(target);
+        *node = nullptr;
+        return true;
+    }
+
+    if (has_two_children(target)) {
+        const Node *successor = find_minimum_value_node(target->right);
+        target->data = successor->data;
+        return delete_binary_search_tree_node(&target->right, successor->data);
+    }
+
+    // Case 3: One child
+    Node *child = target->left != nullptr ? target->left : target->right;
+    free(target);
+    *node = child;
+    return true;
+}
+
+BinarySearchTree *create_binary_search_tree() {
+    BinarySearchTree *tree = malloc(sizeof(BinarySearchTree));
     if (tree != NULL) {
         tree->root = nullptr;
     }
     return tree;
 }
 
-void destroy_binary_search_tree(BinarySearchTree* tree) {
+void destroy_binary_search_tree(BinarySearchTree *tree) {
     if (tree == nullptr) return;
 
     if (tree->root != nullptr) postorder_traversal(tree->root, free_node);
@@ -81,38 +156,42 @@ void destroy_binary_search_tree(BinarySearchTree* tree) {
     free(tree);
 }
 
-void insert_binary_search_tree(BinarySearchTree* tree, const int data) {
-    if (tree == nullptr) return;
+bool insert_binary_search_tree(BinarySearchTree *tree, const int data) {
+    if (tree == nullptr) return false;
 
     if (tree->root == nullptr) {
         tree->root = create_node(data);
-        return;
+        return true;
     }
 
     return insert_binary_search_tree_node(tree->root, data);
 }
 
-bool search_binary_search_tree(const BinarySearchTree* tree, const int data) {
+bool search_binary_search_tree(const BinarySearchTree *tree, const int data) {
     if (tree == nullptr || tree->root == nullptr) return false;
 
     return search_binary_search_tree_node(tree->root, data);
 }
 
-bool delete_binary_search_tree(BinarySearchTree* tree, int data) {
-    return false;
+bool delete_binary_search_tree(BinarySearchTree *tree, const int data) {
+    if (tree == NULL) return false;
+    return delete_binary_search_tree_node(&tree->root, data);
 }
 
-void print_inorder_binary_search_tree(const BinarySearchTree* tree) {
+void print_inorder_binary_search_tree(const BinarySearchTree *tree) {
     if (tree == nullptr) return;
     inorder_traversal(tree->root, print_node);
 }
 
-void print_preorder_binary_search_tree(const BinarySearchTree* tree) {
+void print_preorder_binary_search_tree(const BinarySearchTree *tree) {
     if (tree == nullptr) return;
     preorder_traversal(tree->root, print_node);
 }
 
-void print_postorder_binary_search_tree(const BinarySearchTree* tree) {
+void print_postorder_binary_search_tree(const BinarySearchTree *tree) {
     if (tree == nullptr) return;
     postorder_traversal(tree->root, print_node);
 }
+
+// TODO: Minimum value in tree
+// TODO: Maximum value in tree
