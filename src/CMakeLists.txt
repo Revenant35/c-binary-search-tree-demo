@@ -1,11 +1,6 @@
-add_library(binary_search_tree STATIC
-        binary-search-tree.c
-)
+project(BinarySearchTree_lib)
 
-target_include_directories(binary_search_tree PUBLIC
-        "${PROJECT_SOURCE_DIR}/include"
-)
+set(HEADER_FILES binary-search-tree.h)
+set(SOURCE_FILES binary-search-tree.c)
 
-add_executable(c_binary_search_tree_demo main.c)
-
-target_link_libraries(c_binary_search_tree_demo PRIVATE binary_search_tree)
+add_library(BinarySearchTree_lib STATIC ${SOURCE_FILES} ${HEADER_FILES})
