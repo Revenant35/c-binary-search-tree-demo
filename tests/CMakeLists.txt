@@ -1,0 +1,7 @@
+project(BinarySearchTreeTests)
+add_subdirectory(lib/check)
+include_directories(check_SOURCE_DIR)
+
+add_executable(BinarySearchTreeTests_run test-binary-search-tree.c)
+
+target_link_libraries(BinarySearchTreeTests_run PRIVATE BinarySearchTree_lib check)
